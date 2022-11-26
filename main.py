@@ -1,6 +1,6 @@
 import operator
 from art import logo
-# print(logo)
+print(logo)
 
 ops = {
   "+": operator.add,
@@ -10,22 +10,28 @@ ops = {
 }   
 
 def ask_number(phrase):
-  number = float(input(f"What's the {phrase} number?: "))
-  return number
+  number = input(f"What's the {phrase} number?: ")
+  if number.isdigit() == False:
+    print("Please input an integer")
+    return ask_number(phrase)
+  return float(number)
 
 def ask_continue(curr):
   should_continue = input(f"Type 'y' to continue calculating with {curr}, or type 'n' to start a new calculation: ")
-  return should_continue
+  if should_continue != 'y' and should_continue != 'n':
+    print("Please type 'y' or 'no'")
+    return ask_continue(curr)
+  return should_continue == 'y'
 
 def ask_operator():
   op = input("+\n-\n*\n/\n Pick an operation: ")
   is_valid = op == '/' or op == '+' or op == '-' or op == '*'
   if not is_valid:
     print("Please put a valid operator")
-    ask_operator()
+    return ask_operator()
   return op
 
-def handle_number(operator, curr, number):
+def handle_calculation(operator, curr, number):
   op_function = ops[operator]
   op_calculation = round(op_function(curr, number), 2)
   return op_calculation
@@ -33,12 +39,12 @@ def handle_number(operator, curr, number):
 def handle_asks(curr):
   op = ask_operator()
   number = ask_number("next")
-  calculation = handle_number(op, curr, number)
+  calculation = handle_calculation(op, curr, number)
   print(f"{curr} {op} {number} = {calculation}") 
   return calculation
 
 def run():
-  new_number = True;
+  new_number = True
   current_calc = 0
 
   while new_number:
@@ -47,7 +53,7 @@ def run():
     current_calc = new_number
     should_continue = ask_continue(current_calc)
     
-    if should_continue == 'y':
+    if should_continue:
       new_number = False
     else:
       current_calc = 0
@@ -57,7 +63,7 @@ def run():
     current_calc = new_number
     should_continue = ask_continue(current_calc)
     
-    if should_continue == 'y':
+    if should_continue:
       new_number = False
     else:
       current_calc = 0
