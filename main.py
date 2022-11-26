@@ -11,8 +11,8 @@ ops = {
 
 def ask_number(phrase):
   number = input(f"What's the {phrase} number?: ")
-  if number.isdigit() == False:
-    print("Please input an integer")
+  if not number.isdigit() and not float(number):
+    print("Please input a number")
     return ask_number(phrase)
   return float(number)
 
@@ -45,29 +45,27 @@ def handle_asks(curr):
 
 def run():
   new_number = True
-  current_calc = 0
+  current_calc = ask_number("first")
+  new_number = handle_asks(current_calc)
+  current_calc = new_number
+  should_continue = ask_continue(current_calc)
 
-  while new_number:
-    current_calc = ask_number("first")
-    new_number = handle_asks(current_calc)
-    current_calc = new_number
-    should_continue = ask_continue(current_calc)
-    
-    if should_continue:
+  if should_continue:
       new_number = False
-    else:
-      current_calc = 0
+  else:
+    if not should_continue:
+        current_calc = 0
 
   while not new_number:
     new_number = handle_asks(current_calc)
     current_calc = new_number
     should_continue = ask_continue(current_calc)
-    
+  
     if should_continue:
       new_number = False
     else:
       current_calc = 0
       new_number = True
       run()
-        
+
 run()
